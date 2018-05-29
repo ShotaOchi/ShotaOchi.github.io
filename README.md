@@ -1,2 +1,2 @@
 # ShotaOchi.github.io
-just testing now
+This repository is for announcement of imagerExtra.
