@@ -52,7 +52,7 @@ DenoiseDCT(noisy, sdn = 0.1, flag_dct16x16 = TRUE) %>% plot(main = "Denoised (16
 
 I'm going to add functions.
 
-If you have an idea, let me know by making a issue in [github](https://github.com/ShotaOchi/imagerExtra/issues).
+If you have an idea, let me know by making a issue at [github](https://github.com/ShotaOchi/imagerExtra/issues).
 
 
 
