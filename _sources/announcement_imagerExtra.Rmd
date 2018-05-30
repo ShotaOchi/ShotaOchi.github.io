@@ -1,7 +1,4 @@
 ---
-title: "imagerExtra 1.0.0 Released!"
-author: "Shota Ochi"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_document
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
