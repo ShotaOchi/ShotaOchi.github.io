@@ -1,0 +1,4 @@
+1. rendering Rmd file to html file
+2. remove <!DOCTYPE html>
+3. put the html file into _includes directroy.
+4. write a post that call the html file.
