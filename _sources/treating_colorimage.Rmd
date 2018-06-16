@@ -23,7 +23,7 @@ res[[3]] <- unique(a)
 flag_grayscale <- all(c(res[[1]] == 0.3, res[[2]] == 0.59, res[[3]] == 0.11))			   
 ```
 
-The functions of imagerExtra are basically for grayscale images.
+The functions of imagerExtra are basically for grayscale image.
 
 
 Then can't we treat color images with imagerExtra?
