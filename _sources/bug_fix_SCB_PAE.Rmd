@@ -1,0 +1,77 @@
+---
+title: "Bug Fixes of BalanceSimplest() and EqualizePiecewise()"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, 
+               comment=NA, verbose=TRUE, fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50)) 
+```
+
+BalanceSimplest() and EqualizePiecewise() had bugs.
+
+The bug of BalanceSimplest() is shown below.
+
+```{r, error=TRUE}
+library(imagerExtra)
+g <- grayscale(boats)
+BalanceSimplest(g, 0, 1)
+```
+
+This is because I forgot index of vector started with 1 in R.
+
+When sleft = 0, BalanceSimplest try to use 0th element of a vector.
+
+BalanceSimplest should use 1st element of a vector when sleft = 0.
+
+The bug of EqualizePiecewise() is shown below.
+```{r}
+EqualizePiecewise(g, 21850)
+```
+
+This is because of integer overflow.
+
+We can reproduce the integer overflow as below.
+```{r}
+library(Rcpp)
+sourceCpp(code = "
+  #include <Rcpp.h>
+  //[[Rcpp::export]]
+  double test(int n, int m, int i) {
+    double out = (double)(n * i) / (double)(m + 1); 
+    return out;
+  }
+")
+test(10000,1000000, as.integer(3*10^5))
+```
+
+We can avoid the overflow as below.
+```{r}
+sourceCpp(code = "
+  #include <Rcpp.h>
+  //[[Rcpp::export]]
+  double test(int n, int m, int i) {
+    double out = (double)n * i / (double)(m + 1); 
+    return out;
+  }
+")
+test(10000,1000000, as.integer(3*10^5))
+10000 * as.integer(3*10^5) / (1000000 + 1)
+```
+
+I fixed the bugs.
+
+Please confirm the bugs were fixed.
+```{r, eval=FALSE}
+library(devtools)
+install_github("ShotaOchi/imagerExtra")
+g <- grayscale(boats)
+BalanceSimplest(g, 0, 1)
+EqualizePiecewise(g, 21850)
+```
