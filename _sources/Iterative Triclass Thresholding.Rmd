@@ -1,0 +1,157 @@
+---
+title: "Iterative Triclass Thresholding"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 15px;
+}
+code.r{
+  font-size: 15px;
+}
+pre {
+  font-size: 15px
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, comment=NA, verbose=TRUE, 
+                      fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50)) 
+```
+
+<br />
+Image Segmentation is a first process to analyze objects in image.
+
+There are many segmenation algorithms.
+
+One of them is Iterative Triclass Thresholding (ITT).
+
+ITT is based on Otsu's method but can be applied iteratively.
+
+Otsu's method divides pixels of an image into two classes, foreground and background, by a threshold.
+
+ITT divides pixels into three classes: foreground, background, and "to-be-determined" (TBD).
+
+Let's see how ITT divides pixels into three classes.
+
+First, we apply Otsu's method on an image to get a threshold that divides pixels into two classes. 
+
+Then, compute the means of the two classes divided by the threshold.
+
+(${\mu}_{1}$: mean of foreground, ${\mu}_{0}$: mean of background)
+
+Finally, divide the pixles into three classes as below ($u(x,y):$ pixel value).
+
+* Foreground: pixels whose values are larger than ${\mu}_{1}$ 
+
+    $u(x,y)>{\mu}_{1}$
+
+* Background: pixels whose values are smaller than ${\mu}_{0}$ 
+
+    $u(x,y)<{\mu}_{0}$
+
+* to-be-determined (TBD): pixels whose values are larger than or equal to ${\mu}_{0}$ and smaller than or equal to ${\mu}_{1}$
+
+    ${\mu}_{0}<=u(x,y)<={\mu}_{1}$
+
+```{r, fig.width=7, fig.height=6, echo = FALSE, message = FALSE, fig.cap="Figure 1: a histogram divided into three classes", out.width = "70%", out.height = "70%"} 
+library(imagerExtra)
+m <- load.example("parrots") %>% grayscale()
+thval <- ThresholdTriclass(m, repeatnum = 1, returnvalue = TRUE)
+mv <- as.vector(m)
+myu0 <- mean(mv[mv < thval])
+myu1 <- mean(mv[mv > thval])
+big <- 0.8
+small <- 0.4
+opac <- 1
+pallete_cols <- c(rgb(big, small, small, opac), rgb(small, big, small, opac), rgb(small, small, big, opac))
+a <- hist(m, plot = FALSE)
+back <- sum(a$mids < myu0)
+fore <- sum(a$mids > myu1)
+TBD <- length(a$mids) - (back + fore)
+cols <- c(rep(pallete_cols[1], back), rep(pallete_cols[2], TBD), rep(pallete_cols[3], fore))
+hist(m, xlab = "pixel values", main = "", col = cols) 
+abline(v = thval, lty = 2, lwd = 2)
+abline(v = myu0, lwd = 2)
+abline(v = myu1, lwd = 2)
+text(thval + 0.011, 30000, labels = "Otsu's\nThreshold", cex = 2)
+text(myu0 - 0.065, 30000, labels = "mu0", cex = 2)
+text(myu1 + 0.065, 30000, labels = "mu1", cex = 2)
+#text(0.15, 50000, labels = "Background", cex = 2, col = pallete_cols[1])
+#text(0.5, 50000, labels = "TBD", cex = 3, col = pallete_cols[2])
+#text(0.85, 50000, labels = "foreground", cex = 2.5, col = pallete_cols[3])
+legend(0.8, 60000, legend = c("Background", "TBD", "Foreground"), pch = 15, col = pallete_cols)
+```
+
+Figure 1 shows a histogram divided into three classes.
+
+Red means Background. Green means TBD. Blue means Foreground.
+
+We can apply Otsu's method on TBD region and divide TBD region into three classes.
+
+Then, we have new TBD region again. 
+
+We can iterate division of TBD region.
+
+After the end of iteration, we have a threshold value found by applying Otsu's threshold on last TBD region.
+
+The threshold is a threshold found by Iterative Triclass Threshold.
+
+This iterative method is Iterative Triclass Thresholding.
+
+When do we stop iteration?
+
+We have two options.
+
+* set preset threshold
+* set repeat number
+
+After each iteration (except for first iteration), we can compute the difference between new threshold and old threshold.
+
+If the difference is smaller than preset threshold, we stop iteration.
+
+This is the former way.
+
+The latter way is needless to explain.
+
+ThresholdTriclass() function performs Iterative Triclass Thresholding.
+
+The argument 'stopval' controls preset threshold.
+
+The argument 'repeatnum' controls repeat number.
+
+Note that stopval is ignored if repeatnum is set. 
+ 
+```{r, fig.width=7, fig.height=7, fig.cap="Figure 2: Results of Iterative Triclass Thresholding"}
+library(devtools)
+install_github("ShotaOchi/imagerExtra")
+library(imagerExtra)
+g <- grayscale(dogs)
+layout(matrix(1:4, 2, 2, byrow = TRUE))
+plot(g, main = "Original", axes=F)
+ThresholdTriclass(g, stopval = 0.01) %>% plot(main = "stopval = 0.01", axes=F)
+ThresholdTriclass(g, repeatnum = 1) %>% plot(main = "repeatnum = 1 (Otsu)", axes=F)
+ThresholdTriclass(g, repeatnum = 3) %>% plot(main = "repeatnum = 3", axes=F)
+```
+
+We can see the belly of the dog was segmented as foreground after 3 times iteration.
+
+The belly was not segmented as foreground by Otsu's method. 
+
+ThresholdTriclass() perfoms Otsu's method when repeatnum = 1.
+
+This is one of characteristics of ITT.
+
+ITT can overwhelm Otsu's method in segmenting weak objects and fine details.
+<br />
+<br />
+<br />
+Reference: Cai HM, Yang Z, Cao XH, Xia WM, Xu XY (2014). A New Iterative Triclass Thresholding Technique in Image Segmentation. IEEE TRANSACTIONS ON IMAGE PROCESSING.
