@@ -1,0 +1,37 @@
+---
+title: "imagerExtra 1.1.0 was released!"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, 
+               comment=NA, verbose=TRUE, fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50))
+```
+
+<br />
+imagerExtra 1.1.0 was released.
+
+You can install imagerExtra 1.1.0 from CRAN. 
+
+# Changes in imagerExtra 1.1.0
+
+## New Functions
+  
+* ThresholdTriclass()
+* Grayscale()
+* GetHue()
+* RestoreHue()
+  
+ThresholdTriclass() perfoms iterative triclass thresholding.
+
+Grayscale() and GetHue() and RestoreHue() are for treating color image with imagerExtra.
+
+  
+## Bug Fixes
+* fixed the bug of BalanceSimplest()
+* fixed the bug of EqualizePiecewise()
