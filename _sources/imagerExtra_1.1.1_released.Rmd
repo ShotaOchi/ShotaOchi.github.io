@@ -1,0 +1,205 @@
+---
+title: "imagerExtra 1.1.1 released"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 15px;
+}
+code.r{
+  font-size: 15px;
+}
+pre {
+  font-size: 15px
+}
+</style>
+
+<br />
+imagerExtra 1.1.1 was released for a bug fix.
+
+ThresholdTriclass() in imagerExtra 1.1.0 can cause heap buffer overflow.
+
+Heap buffer overflow is exploitable for malicious attack.
+
+This bug was fixed in imagerExtra 1.1.1.
+
+You should update imagerExtra if you use imagerExtra1.1.0.
+
+I'm sorry for exposing you to danger of mallicious attacks.
+
+I promise I'll never expose you to danger of mallicious attack.
+
+I sincerely apologize again.
+
+<br />
+<br />
+
+The contents below is a note of how to use AddressSanitizer with R.
+
+The note isn't useful for most users of imagerExtra.
+
+However, it's useful for developers of R packages who aren't familiar with memory error detector.
+
+Of course all important things are written in "Writing R Extentions".
+
+However, it can be overwhelming for R users who aren't familiar with C/C++ compiler.
+
+Moreover, it's hard to find websites that explain how to use memory error detector with R.
+
+I found only one website (its URL is below). 
+
+https://francoismichonneau.net/2014/03/how-to-do-ubsan-tests-r-package/
+
+That's why I leave the note of how to use AddressSanitizer with R.
+
+I hope the note will help someone suffered from memory error.
+
+<br />
+
+***
+
+<br />
+
+## How to use memory error detector with R
+
+We must build R from source to use AddressSanitizer with R.
+
+We can use AddressSanitizer with R after building R.
+
+You should uninstall R before building R if you installed R.
+
+You don't have to uninstall R if you know which commands can cause a problem.
+
+I recommend you to work on Linux.
+
+I was on Ubuntu 18.04 (WSL).
+
+Note that I don't recommend you to use WSL because working with WSL is a little painful for me.
+
+### 1. install required packages 
+
+We must install required packages.
+
+In my case, the packages listed below was required.
+
+you can install these packages by "sudo apt install" if you are on Ubuntu.
+
+* build-essential
+* clang
+* libcairo2-dev
+* libxt-dev
+* pandoc 
+* qpdf
+* texinfo
+* texlive-fonts-extra
+* valgrind
+* subversion
+* xorg-dev 
+* libreadline-dev
+* default-jre 
+* default-jdk
+* libbz2-dev
+* liblzma-dev
+* libcurl4-openssl-dev
+* libicu-dev
+* libfftw3-dev 
+* libx11-dev 
+* libtiff-dev
+* libjpeg-dev
+
+Note that required packages differ depending on R packages.
+
+However, you don't have to be afraid.
+
+You can know which packages are required when configuring compilation (Section 2) and checking R packages (Section 4).
+
+You should read all error messages.
+
+The names of the required packages are written in the messages if the required packages are not in your environment.
+
+
+### 2. Get R source and configure compilation
+
+Get R source by using subversion.
+
+```{r, eval = FALSE}
+svn co https://svn.r-project.org/R/trunk ~/R-devel
+cd ~/R-devel
+vim config.site
+```
+
+edit 'config.site' as shown below.
+
+```{r, eval = FALSE}
+  CC="clang -fsanitize=address,undefined -fno-sanitize=float-divide-by-zero -fno-omit-frame-pointer"
+  CXX="clang++ -fsanitize=address,undefined -fno-sanitize=float-divide-by-zero -fno-omit-frame-pointer -frtti"
+  CFLAGS="-g -O3 -Wall -pedantic"
+  FFLAGS="-g -O2 -mtune=native"
+  FCFLAGS="-g -O2 -mtune=native" 
+  CXXFLAGS="-g -O3 -Wall -pedantic"
+  CXXSTD=-std=gnu++98
+  MAIN_LD="clang++ -fsanitize=undefined,address"
+  LDFLAGS="-L/usr/local/clang/lib64 -L/usr/local/lib64"
+  LIBnn="lib64"
+```
+
+Note that you have to uncomment.
+
+Then configure compilation.
+
+```{r, eval = FALSE}
+ ./configure --prefix=/opt/R/R-devel --without-recommended-packages
+```
+
+If there is any complaint, you should resolve it.
+
+### 3. build R and create Makevars.
+
+Build R and create Makevars.
+
+```{r, eval = FALSE}
+ make
+ sudo make install
+ sudo ln -s  /opt/R/R-devel/bin/R /usr/bin/R
+ mkdir ~/.R
+ vim ~/.R/Makevars
+```
+
+Edit Makevars as below.
+```{r, eval = FALSE}
+ CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer
+ CXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer
+```
+ 
+### 4. build and check R package with AddressSanitizer
+
+Now we can check R package with AddressSanitizer! Let's check!
+
+```{r, eval = FALSE}
+R CMD build --no-build-vignettes --no-manual imagerExtra
+R CMD check  --no-manual --no-build-vignettes --no-vignettes imagerExtra_1.1.1.tar.gz
+R CMD check  --no-manual --no-build-vignettes --no-vignettes --as-cran --use-gct imagerExtra_1.1.1.tar.gz
+R CMD check  --no-manual --no-build-vignettes --no-vignettes --as-cran --use-valgrind imagerExtra_1.1.1.tar.gz
+```
+
+Note that these options listed below are not necessary.
+
+* --no-manual 
+* --no-build-vignettes 
+* --no-vignettes
+
+Below is also OK.
+```{r, eval = FALSE}
+R CMD build imagerExtra
+R CMD check imagerExtra_1.1.1.tar.gz
+R CMD check --as-cran --use-gct imagerExtra_1.1.1.tar.gz
+R CMD check --as-cran --use-valgrind imagerExtra_1.1.1.tar.gz
+```
