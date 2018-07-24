@@ -1,0 +1,68 @@
+---
+title: "imagerExtra 1.2.0 was released!"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 15px;
+}
+code.r{
+  font-size: 15px;
+}
+pre {
+  font-size: 15px
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, 
+               comment=NA, verbose=TRUE, fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50))
+```
+
+<br />
+
+imagerExtra 1.2.0 was released.
+
+You can install imagerExtra 1.2.0 from CRAN. 
+
+## New Features in imagerExtra 1.2.0
+
+### New Functions
+  
+* DCT2D
+* IDCT2D  
+* ThresholdAdaptive
+* OCR
+* OCR_data
+
+DCT2D computes two-dimensional discrete cosine transformation.
+
+IDCT2D computes two-dimensional inverse discrete cosine transformation.
+  
+ThresholdAdaptive does local adaptive thresholding.
+
+OCR and OCR_data are shortcuts to ocr and ocr_data of the R package **tesseract**.
+
+### New Vignette
+
+The new vignette "Optical Character Recognition with imagerExtra" was added.
+
+From the vignette, you can see how to do optical character recognition with imagerExtra. 
+  
+### Performance Improvement of SPE 
+
+SPE had used mvdct of the R package **dtt**. mvdct isn't fast.
+
+Now, SPE has used DCT2D and IDCT2D instead of mvdct. DCT2D and IDCT2D are fast.
+
+That's why the performance of SPE was improved.
+
+### Change of Error Handling
+
+The functions of imagerExtra had returned warning messages and NULL values when we input invalid arguments.
+
+Now, the functions of imagerExtra return error messages when we input invalid arguments.
