@@ -1,0 +1,43 @@
+---
+title: "Refactoring of ThresholdFuzzy"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 15px;
+}
+code.r{
+  font-size: 15px;
+}
+pre {
+  font-size: 15px;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, 
+               comment=NA, verbose=TRUE, fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50))
+```
+
+<br />
+
+I refactored the code of ThresholdFuzzy.
+
+Now, ThresholdFuzzy searches best parameters in a discrete manner.
+
+The search in a discrete manner brings a convergence of the results as shown below.
+
+```{r}
+library(devtools)
+install_github("ShotaOchi/imagerExtra")
+library(imagerExtra)
+a <- load.image("http://gahag.net/img/201604/21s/gahag-0078436493-1.jpg") %>% grayscale()
+test <- sapply(1:1000, function(x) ThresholdFuzzy(a, returnvalue = TRUE))
+var(test)
+max(test)
+min(test)
+```
