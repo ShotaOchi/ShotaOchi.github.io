@@ -1,0 +1,96 @@
+---
+title: "Multilevel Thresholding"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 15px;
+}
+code.r{
+  font-size: 15px;
+}
+pre {
+  font-size: 15px;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, 
+               comment=NA, verbose=TRUE, fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50))
+```
+
+<br />
+
+Multilevel thresholding is useful to extract several kinds of objects whose pixel values are not close.
+
+I implemented automatic multilevel thresholding function (ThresholdML) by following [1].
+
+You can use the function as shown below.
+
+```{r, fig.height=5}
+library(devtools)
+install_github("ShotaOchi/imagerExtra")
+library(imagerExtra)
+a <- load.image("https://images.pexels.com/photos/708513/pexels-photo-708513.jpeg") 
+a <- crop.borders(a, 1000, 500) %>% resize(., -20, -20, interpolation_type = 5L)
+g <- G(a)
+b <- ThresholdML(g, 4)
+layout(matrix(1:2, 1, 2))
+plot(g, main = "Original")
+plot(b, main = "Multilevel")
+```
+
+We can see three kinds of balls were extracted.
+
+There are four kinds of balls in the original image, but I don't mind.
+
+The background is annoying. We can remove it.
+
+```{r}
+bg <- bucketfill(a, 1, 1, color="black", sigma = .1) %>% grayscale()
+bg <- bg != 0
+s <- (b + 1) * bg
+plot(s)
+```
+
+Note that ThresholdML uses an artificial bee colony algorithm.
+
+That's why ThresholdML may return different result each time.
+
+```{r, fig.width=5, fig.height=5}
+gg <- boats %>% grayscale()
+test1 <- sapply(1:1000, function(x) ThresholdML(gg, 4, returnvalue = TRUE)) %>% t()
+boxplot(test1, main = "fast", xlab = "thresholds", ylab = "threshold value")
+```
+
+We have two options to reduce the variance of the threshold values.
+
+One is to set thr as "precise".
+
+Another is to set thr as "manual" and tune the parameters.
+
+```{r, fig.width=5, fig.height=5}
+test2 <- sapply(1:1000, function(x) ThresholdML(gg, 4, thr = "precise", returnvalue = TRUE)) %>% t()
+boxplot(test2, main = "precise", xlab = "thresholds", ylab = "threshold value")
+```
+
+```{r, fig.width=5, fig.height=5}
+test3 <- sapply(1:1000, function(x) ThresholdML(gg, 4, thr = "manual", sn = 200, mcn=200, limit = 10, intervalnumber = 2000, returnvalue = TRUE)) %>% t()
+boxplot(test3, main = "manual", xlab = "thresholds", ylab = "threshold value")
+```
+
+You can specify threshold values by setting thr to a numeric vector as shown below.
+
+```{r}
+thr <- c(0.15, 0.3, 0.45, 0.6)
+m <- ThresholdML(g, thr = thr)
+plot(m)
+```
+
+<br />
+
+[1] Ming-HuwiHorng (2011). Multilevel thresholding selection based on the artificial bee colony algorithm for image segmentation. Expert Systems with Applications.
