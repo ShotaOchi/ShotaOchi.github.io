@@ -1,0 +1,57 @@
+---
+title: "Chan-Vese Segmentation"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 15px;
+}
+code.r{
+  font-size: 15px;
+}
+pre {
+  font-size: 15px;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, 
+               comment=NA, verbose=TRUE, fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50))
+```
+
+<br />
+
+Chan-Vese segmentation is a region-based segmentation algorithm.
+
+Region-based segmentation algorithm can extract objects whose pixesl values are not homogeneous.
+
+I implemented Chan-Vese semgmentation (SegmentCV).
+
+We can use the function as shown below.
+
+```{r, fig.height = 5}
+devtools::install_github("ShotaOchi/imagerExtra")
+library(imagerExtra)
+g <- grayscale(dogs)
+layout(matrix(1:2, 1, 2))
+plot(g, main = "Original")
+b <- SegmentCV(g, lambda2 = 15) %>% plot(main = "Binarized")
+```
+
+We can see the belly of the dog was extracted.
+
+It's difficult to extract the belly if we use histogram-based segmentation.
+
+Red curve means boundary of extracted object.
+
+```{r, fig.height = 7}
+layout(matrix(1:4, 2, 2))
+plot(g, main = "A variant of Otsu"); highlight(threshold(g))
+plot(g, main = "Fuzzy Entropy"); highlight(ThresholdFuzzy(g))
+plot(g, main = "Iterative Triclass"); highlight(ThresholdTriclass(g))
+plot(g, main = "Chan-Vese"); highlight(b) 
+```
