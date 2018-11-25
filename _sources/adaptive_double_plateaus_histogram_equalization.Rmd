@@ -1,0 +1,66 @@
+---
+title: "Adaptive Double Plateaus Histogram Equalization"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 15px;
+}
+code.r{
+  font-size: 15px;
+}
+pre {
+  font-size: 15px;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, 
+               comment=NA, verbose=TRUE, fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50))
+```
+
+<br />
+
+Histogram equalization (HE) is a widely used technique for contrast enhancement of images.
+
+However, HE sometimes causes over-enhancement of background noise, whereas the contrast of objects is not enhanced well.
+
+Double plateaus histogram equalization (DPHE) was proposed for overcoming this problem.
+
+DPHE modifies original histogram as shown below, then equalizes the modified histogram.
+
+$$
+H_{m}(g) = \begin{cases}
+  T_{UP} & h(g) >= T_{UP} \\
+  h(g) & T_{DOWN} < h(g) < T_{UP} \\
+  T_{DOWN} & h(g) <= T_{DOWN}
+  \end{cases}
+$$
+where $g$ is the gray level, $h(g)$ is the original histogram, and $H_{m}(g)$ is the modified histogram.
+
+The paramters, $T_{DOWN}$ and $T_{UP}$, are key parameters and its optimal values are scene specific.
+
+Tuning the parameters for each scene are annoying.
+
+That's why adaptive double plateaus histogram equalization (ADPHE), which computes the parameters automatically, was proposed.
+
+I implemented DPHE (EqualizeDP) and ADPHE (EqualizeADP).
+
+We can use the functions as shown below.
+
+```{r}
+devtools::install_github("ShotaOchi/imagerExtra")
+library(imagerExtra)
+g <- load.image("https://cdn.pixabay.com/photo/2017/01/11/19/24/night-1972693_1280.jpg") %>% grayscale
+layout(matrix(1:6, 3, 2, byrow = TRUE))
+plot(g, main = "Original")
+hist(g, main = "histogram of Original")
+HE <- EqualizeDP(g, -1, dim(g)[1]*dim(g)[2], range = c(0,1)) %>% plot(main = "HE")
+hist(HE, main = "Histogram of HE")
+ADPHE <- EqualizeADP(g, range = c(0,1)) %>% plot(main = "ADPHE")
+hist(ADPHE, main = "Histogram of ADPHE")
+```
