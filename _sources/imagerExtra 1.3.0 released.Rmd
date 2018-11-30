@@ -1,0 +1,66 @@
+---
+title: "imagerExtra 1.3.0 was released!"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 15px;
+}
+code.r{
+  font-size: 15px;
+}
+pre {
+  font-size: 15px;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, 
+               comment=NA, verbose=TRUE, fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50))
+```
+
+<br />
+
+imagerExtra 1.3.0 was released.
+
+You can install imagerExtra 1.3.0 from CRAN. 
+
+## New Features in imagerExtra 1.3.0
+
+### New Functions
+
+* ThresholdFuzzy
+* ThresholdML
+* SegmentCV
+* EqualizeDP
+* EqualizeADP
+
+ThresholdFuzzy does an aoutomatic thresholding based on fuzzy set theory.
+
+ThresholdML does multilevel thresholding.
+
+SegmentCV does Chan-Vese segmentation.
+
+EqualizeDP does double plateaus histogram equalization.
+
+EqualizeADP does adaptive double plateaus histogram equalization.
+
+### Change of Field of tesseract
+
+I moved tesseract from Imports fields to Suggests fields in DESCRIPTION file.
+
+This is because not all of users of imagerExtra do optical character recognition, and 
+
+installing tesseract can be annoying on linux.
+
+### Change of License
+
+I have changed license of imagerExtra.
+
+Previous License: GPL(>=3)
+
+Current License: GPL-3
