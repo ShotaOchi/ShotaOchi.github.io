@@ -31,6 +31,7 @@ gem "wdm", "~> 0.1.0" if Gem.win_platform?
 # add site map
 gem 'jekyll-sitemap'
 
-# upgrade to not use vulnerable versions
+# upgrade not to use vulnerable versions
 gem "ffi", ">= 1.9.24"
 gem "rubyzip", ">= 1.2.2"
+gem "nokogiri", ">= 1.8.5"
