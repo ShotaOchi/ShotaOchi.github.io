@@ -1,0 +1,74 @@
+---
+title: "Employing checkmate package and Changing file names of vignettes"
+author: "Shota Ochi"
+date: "`r Sys.Date()`"
+output: 
+  html_document: 
+    number_sections: true
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 15px;
+}
+code.r{
+  font-size: 15px;
+}
+pre {
+  font-size: 15px;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=FALSE, 
+               comment=NA, verbose=TRUE, fig.width=7, fig.height=7, dev='jpeg',dev.args=list(quality=50))
+```
+
+<br />
+
+# Employing checkmate package
+
+I decided to employ checkmate pacakge.
+
+The package enables us to check arguments of function easily.
+
+Employing the package doesn't affect the users of imagerExtra greatly.
+
+However, the package solved my problem with checking function arguments.
+
+Now, there is nothing to hinder my implementing of new function.
+
+## Changes of checking function arguments
+
+Changes that affect the users of imagerExtra are listed below.
+
+I should not change the way of checking function arguments without thinking.
+
+That's why I wrote the reasons of the changes.
+
+<br />
+
+* **EqualizeDP function returns a error instead of a warning when t_down is bigger than t_up.**
+
+&emsp; &emsp; t_down must be smaller than or equal to t_up.
+
+&emsp; &emsp; I believe t_down that is bigger than t_up is a result of a mistake.
+
+* **Functions that have range argument returns a error instead of warning if range isn't ascending order.**
+
+&emsp; &emsp; I believe range that is not ascending order is a result of a mistake.
+
+* **OCR function and OCR_data function accept color image, too.**
+
+&emsp; &emsp; ocr function and ocr_data function of tesseract package accept color image.
+
+&emsp; &emsp; OCR function and OCR_data function should accept color image because there is no reason to reject color image.
+
+# Changing file names of vignettes
+
+I renamed the file names of the vignettes because those were too long.
+
+* gettingstarted.Rmd &rarr; intro.Rmd
+* OCR_with_imagerExtra.Rmd &rarr; ocr.Rmd
+* treat_colorimage.Rmd &rarr; color.Rmd
