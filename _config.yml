@@ -20,7 +20,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   imagerExtra is a R package for image processing.
   This blog is for announcements of imagerExtra.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://shotaochi.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://shotaochi.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: ShotaOchi
 
 # Build settings
@@ -33,7 +33,9 @@ plugins:
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
-# exclude:
+exclude:
+  - _sources/
+  - README.md
 #   - Gemfile
 #   - Gemfile.lock
 #   - node_modules
