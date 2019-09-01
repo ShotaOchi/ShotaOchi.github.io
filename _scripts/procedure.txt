@@ -1,0 +1,20 @@
+1. rendering Rmd file to html file
+2. remove <!DOCTYPE html>
+3. put the html file into _includes directroy.
+4. write a post that call the html file.
+
+1. rendering Rmd file to html file
+2. rename the html file
+3. put the html file into _posts directory
+
+1. rendering Rmd file to html file
+2. remove <!DOCTYPE html>
+2. rename the html file
+4. run the script make_md.R
+3. put the html file into _includes directory
+5. put the markdown file into posts directory
+
+1. run render_rmd_make_md.R
+2. put html file into includes directory
+3. put markdown file into posts directory
+Note that including date and white space in filename is not recommended.
