@@ -34,6 +34,6 @@ gem 'jekyll-sitemap'
 # upgrade not to use vulnerable versions
 gem "ffi", ">= 1.9.24"
 
-gem "rubyzip", ">= 1.2.2"
+gem "rubyzip", ">= 1.3.0"
 
-gem "nokogiri", ">= 1.10.4"
+gem "nokogiri", ">= 1.10.8"
