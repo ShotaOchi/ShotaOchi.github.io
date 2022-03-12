@@ -36,7 +36,7 @@ gem "ffi", ">= 1.9.24"
 
 gem "rubyzip", ">= 1.3.0"
 
-gem "nokogiri", ">= 1.11.4"
+gem "nokogiri", ">= 1.13.2"
 
 gem "activesupport", ">= 6.0.3.1"
 
@@ -45,3 +45,5 @@ gem "kramdown", ">= 2.3.1"
 gem "rexml", ">= 3.2.5"
 
 gem "addressable", ">= 2.8.0"
+
+gem "commonmarker", ">= 0.23.4"
