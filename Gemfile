@@ -36,7 +36,7 @@ gem "ffi", ">= 1.9.24"
 
 gem "rubyzip", ">= 1.3.0"
 
-gem "nokogiri", ">= 1.13.9"
+gem "nokogiri", ">= 1.13.10"
 
 gem "activesupport", ">= 6.0.3.1"
 
