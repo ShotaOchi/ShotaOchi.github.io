@@ -38,7 +38,7 @@ gem "rubyzip", ">= 1.3.0"
 
 gem "nokogiri", ">= 1.13.10"
 
-gem "activesupport", ">= 6.0.3.1"
+gem "activesupport", ">= 6.1.7.1"
 
 gem "kramdown", ">= 2.3.1"
 
